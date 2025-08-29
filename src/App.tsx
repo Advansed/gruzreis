@@ -37,6 +37,7 @@ const App: React.FC = () => {
     <IonApp>
       <ToastProvider>
         <ServerConnectionGuard>
+
           <IonReactRouter>
             <IonSplitPane contentId="main">
               <Menu />
@@ -50,9 +51,8 @@ const App: React.FC = () => {
               </IonRouterOutlet>
             </IonSplitPane>
           </IonReactRouter>
-          
-          {/* Статус сокет-соединения */}
           <ConnectionStatus />
+          
         </ServerConnectionGuard>
       </ToastProvider>
     </IonApp>

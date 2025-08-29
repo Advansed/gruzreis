@@ -1,128 +1,119 @@
-/* Дополнения к src/theme/variables.css для статуса соединения */
+/* For information on how to create your own theme, please see:
+http://ionicframework.com/docs/theming/ */
 
+/** Ionic CSS Variables **/
 :root {
-  /* === СТАТУСЫ СОЕДИНЕНИЯ === */
-  --status-connecting: #ff9500;      /* Оранжевый для подключения */
-  --status-connected: #00cc44;       /* Зеленый для подключено */
-  --status-disconnected: #ff3333;    /* Красный для отключено */
-  --status-reconnecting: #0099ff;    /* Синий для переподключения */
-  --status-error: #ff1744;           /* Красный для ошибки */
+  /* === ПАЛИТРА "CARGO EXPRESS" === */
   
-  /* === АНИМАЦИИ СТАТУСА === */
+  /* Основные цвета логистики */
+  --color-primary: #2563eb;          /* Синий надежности */
+  --color-primary-dark: #1d4ed8;     /* Темно-синий */
+  --color-primary-light: #3b82f6;    /* Светло-синий */
+  
+  --color-secondary: #f97316;        /* Оранжевый скорости */
+  --color-secondary-light: #fb923c;  /* Светло-оранжевый */
+  --color-secondary-dark: #ea580c;   /* Темно-оранжевый */
+  
+  --color-accent: #10b981;           /* Зеленый доставки */
+  --color-accent-light: #34d399;     /* Светло-зеленый */
+  --color-accent-dark: #059669;      /* Темно-зеленый */
+
+  /* Корпоративные цвета (для совместимости с App.css) */
+  --corporate-primary: #2563eb;      /* Синий */
+  --corporate-secondary: #f8fafc;    /* Светлый фон */
+  --corporate-accent: #f97316;       /* Оранжевый */
+  --corporate-blue: #0ea5e9;         /* Голубой */
+  --corporate-white: #ffffff;        /* Белый */
+  --corporate-border: #e2e8f0;       /* Граница */
+  --corporate-text: #1e293b;         /* Текст */
+
+  /* Статусы грузов */
+  --color-success: #10b981;          /* Доставлено */
+  --color-warning: #f59e0b;          /* В пути */
+  --color-danger: #ef4444;           /* Проблемы */
+  --color-info: #3b82f6;             /* Информация */
+
+  /* Нейтральная палитра */
+  --color-white: #ffffff;
+  --color-light: #f1f5f9;
+  --color-dark: #0f172a;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-muted: #94a3b8;
+  --color-background: #ffffff;
+  --color-surface: #f8fafc;
+
+  /* Градиенты */
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --gradient-secondary: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  --gradient-express: linear-gradient(90deg, #2563eb 0%, #f97316 100%);
+  --gradient-logistics: linear-gradient(45deg, #2563eb 0%, #10b981 50%, #f97316 100%);
+
+  /* Тени логистической тематики */
+  --shadow-cargo: 0 4px 16px rgba(37, 99, 235, 0.15);
+  --shadow-express: 0 8px 32px rgba(249, 115, 22, 0.2);
+  --shadow-delivery: 0 2px 8px rgba(16, 185, 129, 0.15);
+
+  /* Glass эффекты с логистическими цветами */
+  --glass-background: rgba(248, 250, 252, 0.8);
+  --glass-border: rgba(37, 99, 235, 0.2);
+  --glass-shadow: 0 8px 32px rgba(37, 99, 235, 0.1);
+
+  /* Переходы и анимации */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Размеры и отступы */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Радиусы скругления */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Типографика */
+  --font-family-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* === СТАТУСЫ СОЕДИНЕНИЯ === */
+  /* (существующие переменные сохраняются) */
+  --status-connecting: #ff9500;      
+  --status-connected: #00cc44;       
+  --status-disconnected: #ff3333;    
+  --status-reconnecting: #0099ff;    
+  --status-error: #ff1744;           
+  
   --status-pulse-duration: 1.5s;
   --status-spin-duration: 2s;
   --status-shake-duration: 0.5s;
   
-  /* === OVERLAY СОЕДИНЕНИЯ === */
   --connection-overlay-bg: rgba(0, 0, 0, 0.85);
   --connection-card-bg: rgba(255, 255, 255, 0.95);
   --connection-border: rgba(0, 153, 255, 0.3);
   
-  /* === ПРОГРЕСС БАР === */
   --progress-bg: rgba(0, 153, 255, 0.2);
   --progress-fill: linear-gradient(90deg, #0099ff 0%, #00cc44 100%);
 }
-
-/* === УТИЛИТАРНЫЕ КЛАССЫ ДЛЯ СТАТУСА === */
-
-.status-connecting {
-  color: var(--status-connecting) !important;
-}
-
-.status-connected {
-  color: var(--status-connected) !important;
-}
-
-.status-disconnected {
-  color: var(--status-disconnected) !important;
-}
-
-.status-reconnecting {
-  color: var(--status-reconnecting) !important;
-}
-
-.status-error {
-  color: var(--status-error) !important;
-}
-
-/* === ИНДИКАТОРЫ СОСТОЯНИЯ === */
-
-.connection-indicator {
-  position: fixed;
-  top: var(--spacing-md);
-  right: var(--spacing-md);
-  z-index: 1000;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: var(--transition-normal);
-}
-
-.connection-indicator.connected {
-  background: rgba(0, 204, 68, 0.1);
-  border: 1px solid rgba(0, 204, 68, 0.3);
-  color: var(--status-connected);
-}
-
-.connection-indicator.disconnected {
-  background: rgba(255, 51, 51, 0.1);
-  border: 1px solid rgba(255, 51, 51, 0.3);
-  color: var(--status-disconnected);
-  animation: pulse var(--status-pulse-duration) ease-in-out infinite;
-}
-
-.connection-indicator.reconnecting {
-  background: rgba(0, 153, 255, 0.1);
-  border: 1px solid rgba(0, 153, 255, 0.3);
-  color: var(--status-reconnecting);
-  animation: pulse var(--status-pulse-duration) ease-in-out infinite;
-}
-
-/* === БЛОКИРОВКА ИНТЕРФЕЙСА === */
-
-.app-blocked {
-  pointer-events: none;
-  opacity: 0.6;
-  filter: blur(2px);
-  transition: all 0.3s ease;
-}
-
-.app-blocked::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: transparent;
-  z-index: 999;
-}
-
-/* === АНИМАЦИИ ДЛЯ ТЕМНОЙ ТЕМЫ === */
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --connection-overlay-bg: rgba(0, 0, 0, 0.9);
-    --connection-card-bg: rgba(30, 41, 59, 0.95);
-    --connection-border: rgba(0, 153, 255, 0.4);
-  }
-  
-  .connection-indicator.connected {
-    background: rgba(0, 204, 68, 0.2);
-    border-color: rgba(0, 204, 68, 0.4);
-  }
-  
-  .connection-indicator.disconnected {
-    background: rgba(255, 51, 51, 0.2);
-    border-color: rgba(255, 51, 51, 0.4);
-  }
-  
-  .connection-indicator.reconnecting {
-    background: rgba(0, 153, 255, 0.2);
-    border-color: rgba(0, 153, 255, 0.4);
-  }
-}/* For information on how to create your own theme, please see:
-http://ionicframework.com/docs/theming/ */
