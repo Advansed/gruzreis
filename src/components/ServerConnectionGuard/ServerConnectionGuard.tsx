@@ -1,6 +1,7 @@
 // src/components/ServerConnectionGuard/ServerConnectionGuard.tsx
 
 import React, { useEffect, useState } from 'react';
+import { useSocket } from '../Store/useSocket';
 import { ReconnectToServerForm } from '../ReconnectToServerForm/ReconnectToServerForm';
 
 interface ServerConnectionGuardProps {
@@ -9,37 +10,31 @@ interface ServerConnectionGuardProps {
 
 export const ServerConnectionGuard: React.FC<ServerConnectionGuardProps> = ({ children }) => {
   const [isServerAvailable, setIsServerAvailable] = useState(false);
-  const [isChecking, setIsChecking] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  const { isConnecting, checkServerAvailability } = useSocket();
 
-  const checkServerHealth = async () => {
-    setIsChecking(true);
+  const checkServerConnection = async () => {
     setError(null);
 
     try {
-      // Простая проверка доступности сервера
-      const response = await fetch('https://gruzreis.ru/api/health', {
-        method: 'GET',
-        timeout: 10000
-      } as any);
-
-      if (response.ok) {
+      const available = await checkServerAvailability();
+      
+      if (available) {
         setIsServerAvailable(true);
         setError(null);
       } else {
-        throw new Error(`Сервер недоступен (${response.status})`);
+        throw new Error('Не удалось подключиться к серверу');
       }
     } catch (err: any) {
       setIsServerAvailable(false);
-      setError(err.message || 'Ошибка подключения к серверу');
-    } finally {
-      setIsChecking(false);
+      setError(err.message || 'Сервер недоступен');
     }
   };
 
   // Проверка при загрузке
   useEffect(() => {
-    checkServerHealth();
+    checkServerConnection();
   }, []);
 
   // Если сервер доступен - показываем приложение
@@ -50,9 +45,9 @@ export const ServerConnectionGuard: React.FC<ServerConnectionGuardProps> = ({ ch
   // Показываем форму переподключения
   return (
     <ReconnectToServerForm 
-      isConnecting={isChecking}
+      isConnecting={isConnecting}
       error={error}
-      onRetry={checkServerHealth}
+      onRetry={checkServerConnection}
     />
   );
 };

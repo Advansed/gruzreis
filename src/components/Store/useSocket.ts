@@ -81,6 +81,20 @@ export function useSocket() {
     };
   }, []);
 
+  // Проверка доступности сервера без токена
+  const checkServerAvailability = useCallback(async () => {
+    try {
+      setIsConnecting(true);
+      const available = await socketService.checkConnection();
+      setIsConnecting(false);
+      return available;
+    } catch (error) {
+      console.error('Server check failed:', error);
+      setIsConnecting(false);
+      return false;
+    }
+  }, []);
+
   return {
     // Состояние
     isConnected,
@@ -91,6 +105,7 @@ export function useSocket() {
     disconnect,
     emit,
     on,
+    checkServerAvailability,
     
     // Утилиты
     getSocket: () => socketService.getSocket(),
