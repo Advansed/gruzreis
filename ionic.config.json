@@ -1,0 +1,7 @@
+{
+  "name": "gruzreis",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
