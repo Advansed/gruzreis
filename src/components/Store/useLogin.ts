@@ -4,8 +4,7 @@ import { useCallback } from 'react'
 import { 
   UniversalStore, 
   useStore, 
-  TState,
-  apiCall
+  TState
 } from './Store'
 import { useToast } from '../Toast'
 import { socketService } from '../../services/socketService'
@@ -100,74 +99,54 @@ export function useLogin() {
 
   const toast = useToast()
 
-  // Подключение к сокету после успешной авторизации
-  const connectSocket = useCallback(async (authToken: string) => {
-    try {
-      const success = await socketService.connect(authToken);
-      appStore.dispatch({ type: 'socketConnected', data: success })
-      
-      // Отслеживаем статус сокета
-      const socket = socketService.getSocket();
-      if (socket) {
-        socket.on('disconnect', () => {
-          appStore.dispatch({ type: 'socketConnected', data: false })
-        });
-        
-        socket.on('connect', () => {
-          appStore.dispatch({ type: 'socketConnected', data: true })
-        });
-      }
-      
-      return success;
-    } catch (error) {
-      console.error('Socket connection failed:', error);
-      appStore.dispatch({ type: 'socketConnected', data: false })
-      return false;
-    }
-  }, [])
-
   const login = useCallback(async (phoneNumber: string, password: string): Promise<boolean> => {
+    
     appStore.dispatch({ type: 'isLoading', data: true })
 
     try {
-      // HTTP авторизация через API
-      const response = await apiCall<AuthResponse>(
-        'https://gruzreis.ru/api/',
-        'authorization',
-        { login: phoneNumber, password }
-      );
-
-      if (response.success && response.data) {
-        const userData = response.data;
-        
-        // Сохраняем данные пользователя
-        appStore.dispatch({ type: 'auth',           data: true })
-        appStore.dispatch({ type: 'id',             data: userData.guid })
-        appStore.dispatch({ type: 'name',           data: userData.name })
-        appStore.dispatch({ type: 'phone',          data: userData.phone })
-        appStore.dispatch({ type: 'email',          data: userData.email })
-        appStore.dispatch({ type: 'image',          data: userData.image })
-        appStore.dispatch({ type: 'token',          data: userData.token })
-        appStore.dispatch({ type: 'user_type',      data: userData.user_type })
-        appStore.dispatch({ type: 'description',    data: userData.description })
-        appStore.dispatch({ type: 'ratings',        data: userData.ratings })
-        appStore.dispatch({ type: 'notifications',  data: userData.notifications })
-        
-        // Подключаемся к сокету с токеном
-        await connectSocket(userData.token);
-        
-        appStore.dispatch({ type: 'isLoading', data: false })
-        toast.success('Авторизация успешна')
-
-        return true;
-      } else {
-        // Ошибка авторизации
-        appStore.dispatch({ type: 'isLoading',    data: false })
-        appStore.dispatch({ type: 'auth',         data: false })
-
-        toast.error(response.message || 'Неверный логин или пароль')
-        return false;
+      const socket = socketService.getSocket();
+      if (!socket) {
+        throw new Error('Socket не подключен');
       }
+
+      return new Promise((resolve) => {
+
+        // Обработчик ответа на авторизацию
+        const handleAuthResponse = (response: any) => {
+
+          if (response.success && response.data) {
+            const userData = response.data;
+            
+            // Сохраняем данные пользователя
+            appStore.dispatch({ type: 'auth',           data: true })
+            appStore.dispatch({ type: 'id',             data: userData.guid })
+            appStore.dispatch({ type: 'name',           data: userData.name })
+            appStore.dispatch({ type: 'phone',          data: userData.phone })
+            appStore.dispatch({ type: 'email',          data: userData.email })
+            appStore.dispatch({ type: 'image',          data: userData.image })
+            appStore.dispatch({ type: 'token',          data: userData.token })
+            appStore.dispatch({ type: 'user_type',      data: userData.user_type })
+            appStore.dispatch({ type: 'description',    data: userData.description })
+            appStore.dispatch({ type: 'ratings',        data: userData.ratings })
+            appStore.dispatch({ type: 'notifications',  data: userData.notifications })
+            
+            appStore.dispatch({ type: 'isLoading', data: false })
+            toast.success('Авторизация успешна')
+            resolve(true);
+          } else {
+            // Ошибка авторизации
+            appStore.dispatch({ type: 'isLoading',    data: false })
+            appStore.dispatch({ type: 'auth',         data: false })
+
+            toast.error(response.message || 'Неверный логин или пароль')
+            resolve(false);
+          }
+        };
+
+        // Подписка на ответ и отправка запроса
+        socket.once('authorization', handleAuthResponse);
+        socket.emit('authorization', { login: phoneNumber, password });
+      });
 
     } catch (error: any) {
       appStore.dispatch({ type: 'isLoading',      data: false })
@@ -176,7 +155,7 @@ export function useLogin() {
       toast.error('Ошибка подключения к серверу')
       return false;
     }
-  }, [connectSocket, toast])
+  }, [toast])
 
   const logout = useCallback(() => {
     // Отключаемся от сокета
@@ -184,18 +163,18 @@ export function useLogin() {
     
     // Очищаем состояние
     appStore.batchUpdate({
-      auth: false,
-      id: null,
-      name: null,
-      phone: null,
-      email: null,
-      image: null,
-      token: null,
-      user_type: null,
-      description: null,
-      ratings: null,
-      notifications: null,
-      socketConnected: false
+      auth:               false,
+      id:                 null,
+      name:               null,
+      phone:              null,
+      email:              null,
+      image:              null,
+      token:              null,
+      user_type:          null,
+      description:        null,
+      ratings:            null,
+      notifications:      null,
+      socketConnected:    false
     })
 
     toast.info("Выход из системы")
@@ -216,8 +195,7 @@ export function useLogin() {
     isLoading,
     socketConnected,
     login,
-    logout,
-    connectSocket
+    logout
   }
 }
 
