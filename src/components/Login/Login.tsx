@@ -23,7 +23,6 @@ import {
 } from 'ionicons/icons';
 import { useLogin } from '../Store/useLogin';
 import styles from './Login.module.css';
-import { InputMask } from '@react-input/mask';
 import PhoneInput from '../PhoneInput';
 
 
@@ -38,9 +37,24 @@ const Login: React.FC = () => {
   // Редирект при успешной авторизации
   useEffect(() => {
     if (auth) {
+      localStorage.setItem( "gruzvreis.login", phone )
+      localStorage.setItem( "gruzvreis.password", password )
       window.location.href = '/folder/Inbox';
     }
   }, [auth]);
+
+  useEffect(()=>{
+    
+    const login = localStorage.getItem("gruzvreis.login")
+
+    if(login) {
+
+      setPhone( login )
+
+      setPassword( localStorage.getItem("gruzvreis.password") as string )
+
+    }
+  },[])
 
   // Форматирование номера телефона
   const formatPhone = (value: string) => {
@@ -119,6 +133,7 @@ const Login: React.FC = () => {
               <IonLabel position="stacked">Номер телефона</IonLabel>
 
               <PhoneInput 
+                value={ phone }
                 onValueChange = { handlePhoneChange }
               />
 
