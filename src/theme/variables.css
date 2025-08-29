@@ -1,2 +1,128 @@
-/* For information on how to create your own theme, please see:
+/* Дополнения к src/theme/variables.css для статуса соединения */
+
+:root {
+  /* === СТАТУСЫ СОЕДИНЕНИЯ === */
+  --status-connecting: #ff9500;      /* Оранжевый для подключения */
+  --status-connected: #00cc44;       /* Зеленый для подключено */
+  --status-disconnected: #ff3333;    /* Красный для отключено */
+  --status-reconnecting: #0099ff;    /* Синий для переподключения */
+  --status-error: #ff1744;           /* Красный для ошибки */
+  
+  /* === АНИМАЦИИ СТАТУСА === */
+  --status-pulse-duration: 1.5s;
+  --status-spin-duration: 2s;
+  --status-shake-duration: 0.5s;
+  
+  /* === OVERLAY СОЕДИНЕНИЯ === */
+  --connection-overlay-bg: rgba(0, 0, 0, 0.85);
+  --connection-card-bg: rgba(255, 255, 255, 0.95);
+  --connection-border: rgba(0, 153, 255, 0.3);
+  
+  /* === ПРОГРЕСС БАР === */
+  --progress-bg: rgba(0, 153, 255, 0.2);
+  --progress-fill: linear-gradient(90deg, #0099ff 0%, #00cc44 100%);
+}
+
+/* === УТИЛИТАРНЫЕ КЛАССЫ ДЛЯ СТАТУСА === */
+
+.status-connecting {
+  color: var(--status-connecting) !important;
+}
+
+.status-connected {
+  color: var(--status-connected) !important;
+}
+
+.status-disconnected {
+  color: var(--status-disconnected) !important;
+}
+
+.status-reconnecting {
+  color: var(--status-reconnecting) !important;
+}
+
+.status-error {
+  color: var(--status-error) !important;
+}
+
+/* === ИНДИКАТОРЫ СОСТОЯНИЯ === */
+
+.connection-indicator {
+  position: fixed;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: 1000;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: var(--transition-normal);
+}
+
+.connection-indicator.connected {
+  background: rgba(0, 204, 68, 0.1);
+  border: 1px solid rgba(0, 204, 68, 0.3);
+  color: var(--status-connected);
+}
+
+.connection-indicator.disconnected {
+  background: rgba(255, 51, 51, 0.1);
+  border: 1px solid rgba(255, 51, 51, 0.3);
+  color: var(--status-disconnected);
+  animation: pulse var(--status-pulse-duration) ease-in-out infinite;
+}
+
+.connection-indicator.reconnecting {
+  background: rgba(0, 153, 255, 0.1);
+  border: 1px solid rgba(0, 153, 255, 0.3);
+  color: var(--status-reconnecting);
+  animation: pulse var(--status-pulse-duration) ease-in-out infinite;
+}
+
+/* === БЛОКИРОВКА ИНТЕРФЕЙСА === */
+
+.app-blocked {
+  pointer-events: none;
+  opacity: 0.6;
+  filter: blur(2px);
+  transition: all 0.3s ease;
+}
+
+.app-blocked::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 999;
+}
+
+/* === АНИМАЦИИ ДЛЯ ТЕМНОЙ ТЕМЫ === */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --connection-overlay-bg: rgba(0, 0, 0, 0.9);
+    --connection-card-bg: rgba(30, 41, 59, 0.95);
+    --connection-border: rgba(0, 153, 255, 0.4);
+  }
+  
+  .connection-indicator.connected {
+    background: rgba(0, 204, 68, 0.2);
+    border-color: rgba(0, 204, 68, 0.4);
+  }
+  
+  .connection-indicator.disconnected {
+    background: rgba(255, 51, 51, 0.2);
+    border-color: rgba(255, 51, 51, 0.4);
+  }
+  
+  .connection-indicator.reconnecting {
+    background: rgba(0, 153, 255, 0.2);
+    border-color: rgba(0, 153, 255, 0.4);
+  }
+}/* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
