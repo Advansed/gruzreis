@@ -23,6 +23,9 @@ import {
 } from 'ionicons/icons';
 import { useLogin } from '../Store/useLogin';
 import styles from './Login.module.css';
+import { InputMask } from '@react-input/mask';
+import PhoneInput from '../PhoneInput';
+
 
 const Login: React.FC = () => {
   const [phone, setPhone] = useState('');
@@ -55,7 +58,7 @@ const Login: React.FC = () => {
   };
 
   const handlePhoneChange = (e: any) => {
-    const formatted = formatPhone(e.detail.value!);
+    const formatted = formatPhone( e );
     setPhone(formatted);
     if (errors.phone) setErrors(prev => ({ ...prev, phone: undefined }));
   };
@@ -114,14 +117,11 @@ const Login: React.FC = () => {
             <IonItem className={styles.inputItem} >
               <IonIcon icon={callOutline} slot="start" className={styles.inputIcon} />
               <IonLabel position="stacked">Номер телефона</IonLabel>
-              <IonInput
-                type="tel"
-                placeholder="+7 999 123-45-67"
-                value={phone}
-                onIonInput={handlePhoneChange}
-                maxlength={18}
-                disabled={isLoading}
+
+              <PhoneInput 
+                onValueChange = { handlePhoneChange }
               />
+
             </IonItem>
             {errors.phone && (
               <IonText color="danger" className={styles.errorText}>

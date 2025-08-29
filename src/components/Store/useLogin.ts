@@ -114,6 +114,7 @@ export function useLogin() {
         // Обработчик ответа на авторизацию
         const handleAuthResponse = (response: any) => {
 
+          console.log("AuthResponce", response )
           if (response.success && response.data) {
             const userData = response.data;
             
@@ -139,6 +140,7 @@ export function useLogin() {
             appStore.dispatch({ type: 'auth',         data: false })
 
             toast.error(response.message || 'Неверный логин или пароль')
+
             resolve(false);
           }
         };
