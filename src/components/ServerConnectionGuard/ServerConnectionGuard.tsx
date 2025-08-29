@@ -9,25 +9,25 @@ interface ServerConnectionGuardProps {
 }
 
 export const ServerConnectionGuard: React.FC<ServerConnectionGuardProps> = ({ children }) => {
-  const [isServerAvailable, setIsServerAvailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const { isConnecting, checkServerAvailability } = useSocket();
+  const { isConnecting, isConnected, connect } = useSocket();
 
   const checkServerConnection = async () => {
+
+    console.log("check server")
+
     setError(null);
 
     try {
-      const available = await checkServerAvailability();
       
-      if (available) {
-        setIsServerAvailable(true);
-        setError(null);
+      if (isConnected) {
+        console.log("connected")
       } else {
-        throw new Error('Не удалось подключиться к серверу');
+        connect('')
+        //throw new Error('Не удалось подключиться к серверу');
       }
     } catch (err: any) {
-      setIsServerAvailable(false);
       setError(err.message || 'Сервер недоступен');
     }
   };
@@ -38,7 +38,7 @@ export const ServerConnectionGuard: React.FC<ServerConnectionGuardProps> = ({ ch
   }, []);
 
   // Если сервер доступен - показываем приложение
-  if (isServerAvailable) {
+  if (isConnected) {
     return <>{children}</>;
   }
 

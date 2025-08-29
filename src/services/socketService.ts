@@ -8,30 +8,6 @@ class SocketService {
   private readonly SERVER_URL   = 'https://gruzreis.ru';
   private readonly SOCKET_PATH  = '/node/socket.io/';
 
-  // Проверка доступности сервера (без токена)
-  checkConnection(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const testSocket = io(this.SERVER_URL, {
-        path: this.SOCKET_PATH,
-        transports: ['polling', 'websocket'],
-        autoConnect: true,
-        reconnection: false,
-        timeout: 10000
-      });
-
-      testSocket.on('connect', () => {
-        console.log('Сервер доступен');
-        testSocket.disconnect();
-        resolve(true);
-      });
-
-      testSocket.on('connect_error', (error) => {
-        console.error('Сервер недоступен:', error);
-        testSocket.disconnect();
-        reject(error);
-      });
-    });
-  }
 
   // Подключение к серверу с токеном
   connect(token: string): Promise<boolean> {
