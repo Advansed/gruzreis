@@ -39,7 +39,7 @@ const Login: React.FC = () => {
     if (auth) {
       localStorage.setItem( "gruzvreis.login", phone )
       localStorage.setItem( "gruzvreis.password", password )
-      window.location.href = '/folder/Inbox';
+      // window.location.href = '/folder/Inbox';
     }
   }, [auth]);
 
