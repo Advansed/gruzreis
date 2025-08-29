@@ -1,134 +1,99 @@
 // src/components/Store/useSocket.ts
 
 import { useEffect, useState, useCallback } from 'react';
-import { SocketService, ConnectionStatus } from '../../services/socketService';
-import { UniversalStore, TState } from './Store';
-
-// Расширяем состояние для сокетов
-export interface SocketState extends TState {
-  isConnected: boolean;
-  connectionStatus: ConnectionStatus;
-  lastConnected: Date | null;
-  reconnectAttempts: number;
-}
-
-// Создаем store для состояния сокетов
-export const socketStore = new UniversalStore<SocketState>({
-  initialState: {
-    isConnected: false,
-    connectionStatus: 'disconnected',
-    lastConnected: null,
-    reconnectAttempts: 0
-  },
-  enableLogging: false
-});
+import { socketService } from '../../services/socketService';
 
 export function useSocket() {
-  const [status, setStatus] = useState<ConnectionStatus>('disconnected');
   const [isConnected, setIsConnected] = useState(false);
-  const socketService = SocketService.getInstance();
+  const [isConnecting, setIsConnecting] = useState(false);
 
-  // Подписываемся на изменения статуса соединения
+  // Отслеживание состояния подключения
   useEffect(() => {
-    const handleStatusChange = (event: CustomEvent) => {
-      const newStatus = event.detail.status as ConnectionStatus;
-      const connected = newStatus === 'connected';
-      
-      setStatus(newStatus);
-      setIsConnected(connected);
-      
-      // Обновляем store
-      socketStore.dispatch({ type: 'connectionStatus', data: newStatus });
-      socketStore.dispatch({ type: 'isConnected', data: connected });
-      
-      if (connected) {
-        socketStore.dispatch({ type: 'lastConnected', data: new Date() });
-        socketStore.dispatch({ type: 'reconnectAttempts', data: 0 });
-      } else if (newStatus === 'reconnecting') {
-        const current = socketStore.getState().reconnectAttempts;
-        socketStore.dispatch({ type: 'reconnectAttempts', data: current + 1 });
-      }
+    const socket = socketService.getSocket();
+    if (!socket) return;
+
+    const handleConnect = () => {
+      setIsConnected(true);
+      setIsConnecting(false);
     };
 
-    window.addEventListener('socket_status_changed', handleStatusChange as EventListener);
-    
-    // Инициализация текущего статуса
-    const currentStatus = socketService.getStatus();
-    handleStatusChange(new CustomEvent('socket_status_changed', { 
-      detail: { status: currentStatus } 
-    }));
+    const handleDisconnect = () => {
+      setIsConnected(false);
+      setIsConnecting(false);
+    };
+
+    const handleConnecting = () => {
+      setIsConnecting(true);
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('connecting', handleConnecting);
+
+    // Установка начального состояния
+    setIsConnected(socketService.isSocketConnected());
 
     return () => {
-      window.removeEventListener('socket_status_changed', handleStatusChange as EventListener);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('connecting', handleConnecting);
     };
-  }, [socketService]);
+  }, [socketService.getSocket()?.id]);
 
-  // Подключение к сокету
-  const connect = useCallback(async (url: string, token?: string) => {
+  // Подключение
+  const connect = useCallback(async (token: string) => {
     try {
-      await socketService.connect({ url, token });
-      return true;
+      setIsConnecting(true);
+      const success = await socketService.connect(token);
+      return success;
     } catch (error) {
       console.error('Socket connection failed:', error);
+      setIsConnecting(false);
       return false;
     }
-  }, [socketService]);
+  }, []);
 
-  // Отключение от сокета
+  // Отключение
   const disconnect = useCallback(() => {
     socketService.disconnect();
-  }, [socketService]);
+    setIsConnected(false);
+    setIsConnecting(false);
+  }, []);
 
-  // Отправка сообщения
+  // Отправка события
   const emit = useCallback((event: string, data?: any) => {
     return socketService.emit(event, data);
-  }, [socketService]);
+  }, []);
 
   // Подписка на событие
   const on = useCallback((event: string, callback: Function) => {
-    socketService.on(event, callback);
+    const socket = socketService.getSocket();
+    if (socket) {
+      socket.on(event, callback as any);
+    }
     
     // Возвращаем функцию для отписки
     return () => {
-      socketService.off(event, callback);
+      const currentSocket = socketService.getSocket();
+      if (currentSocket) {
+        currentSocket.off(event, callback as any);
+      }
     };
-  }, [socketService]);
-
-  // Отписка от события
-  const off = useCallback((event: string, callback?: Function) => {
-    socketService.off(event, callback);
-  }, [socketService]);
+  }, []);
 
   return {
     // Состояние
-    status,
     isConnected,
+    isConnecting,
     
     // Методы
     connect,
     disconnect,
     emit,
     on,
-    off,
     
     // Утилиты
-    isReconnecting: status === 'reconnecting',
-    hasError: status === 'error',
-    isConnecting: status === 'connecting'
-  };
-}
-
-// Хук для получения состояния из store
-export function useSocketState() {
-  const isConnected = socketStore.getState().isConnected;
-  const connectionStatus = socketStore.getState().connectionStatus;
-  const lastConnected = socketStore.getState().lastConnected;
-  const reconnectAttempts = socketStore.getState().reconnectAttempts;
-
-  return {
-    isConnected,
-    connectionStatus,
-    lastConnected,
-    reconnectAttempts
+    getSocket: () => socketService.getSocket(),
+    getStatus: () => socketService.getStatus()
   };
 }
