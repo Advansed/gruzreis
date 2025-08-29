@@ -103,7 +103,7 @@ const Login: React.FC = () => {
           {/* Заголовок */}
           <div className={styles.header}>
             <IonIcon icon={carOutline} className={styles.headerIcon} />
-            <h1 className={styles.title}>CARGO EXPRESS</h1>
+            <h1 className={styles.title}>ГРУЗ В РЕЙС</h1>
             <p className={styles.subtitle}>Система управления грузоперевозками</p>
           </div>
 
