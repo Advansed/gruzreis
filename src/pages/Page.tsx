@@ -3,12 +3,13 @@
 import React, { useEffect } from 'react';
 import { IonButtons, IonButton, IonIcon, IonContent, IonPage } from '@ionic/react';
 import { useParams } from 'react-router';
-import { addOutline, searchOutline, ellipsisVerticalOutline } from 'ionicons/icons';
 import { useNavigation } from '../hooks/useNavigation';
 import PageHeader from './PageHeader';
+import Cargos from '../components/Cargos/Cargos';
 
 const Page: React.FC = () => {
   const { name } = useParams<{ name: string }>();
+  
   const { 
     navigateToSection, 
     getCurrentLevel, 
@@ -33,21 +34,13 @@ const Page: React.FC = () => {
 
   const renderRightButtons = () => {
     switch (name) {
-      case 'Inbox':
-        return (
-          <>
-          </>
-        );
+
+      case 'Cargos':return (<></>);
       
-      case 'Outbox':
-        return (
-          <></>
-        );
+      case 'Outbox':return (<></>);
       
-      default:
-        return (
-          <></>
-        );
+      default: return (<></>);
+
     }
   };
 
@@ -62,8 +55,8 @@ const Page: React.FC = () => {
     
     // Показываем более детальный заголовок для глубоких уровней
     switch (name) {
-      case 'Inbox':
-        if (currentLevel === 'details') return 'Письмо';
+      case 'Cargos':
+        if (currentLevel === 'main') return 'Грузы';
         if (currentLevel === 'attachments') return 'Вложения';
         break;
       
@@ -82,8 +75,8 @@ const Page: React.FC = () => {
 
   const renderContent = () => {
     switch (name) {
-      case 'Inbox':
-        return renderInboxContent(currentLevel, sectionNav.data);
+      case 'Cargos':
+        return Cargos( currentLevel );
       
       case 'Outbox':
         return renderOutboxContent(currentLevel, sectionNav.data);
@@ -207,7 +200,7 @@ const Page: React.FC = () => {
       />
       
       <IonContent fullscreen>
-        {renderContent()}
+        { renderContent() }
       </IonContent>
     </IonPage>
   );

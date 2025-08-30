@@ -34,49 +34,25 @@ import {
 import { useLogin } from './Store/useLogin';
 import './Menu.css';
 
+import { Truck } from 'lucide-react'
+
+
 interface AppPage {
-  url: string;
-  iosIcon: string;
-  mdIcon: string;
-  title: string;
+  url:      string;
+  iosIcon:  string;
+  mdIcon:   string;
+  title:    string;
+  src:      any;
 }
+
 
 const appPages: AppPage[] = [
   {
-    title: 'Inbox',
-    url: '/folder/Inbox',
-    iosIcon: mailOutline,
-    mdIcon: mailSharp
-  },
-  {
-    title: 'Outbox',
-    url: '/folder/Outbox',
-    iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
-  },
-  {
-    title: 'Favorites',
-    url: '/folder/Favorites',
-    iosIcon: heartOutline,
-    mdIcon: heartSharp
-  },
-  {
-    title: 'Archived',
-    url: '/folder/Archived',
-    iosIcon: archiveOutline,
-    mdIcon: archiveSharp
-  },
-  {
-    title: 'Trash',
-    url: '/folder/Trash',
-    iosIcon: trashOutline,
-    mdIcon: trashSharp
-  },
-  {
-    title: 'Spam',
-    url: '/folder/Spam',
-    iosIcon: warningOutline,
-    mdIcon: warningSharp
+    title:    'Cargos',
+    url:      '/folder/Cargos',
+    iosIcon:  mailOutline,
+    mdIcon:   mailSharp,
+    src:      <Truck className="w-1 h-1" size={32} />
   }
 ];
 
@@ -102,7 +78,7 @@ const Menu: React.FC = () => {
         {/* Логотип и название приложения */}
         <div className="menu-header">
           <div className="logo-container">
-            <IonIcon icon={carOutline} className="app-logo" />
+            <img src='gvrLogo.png' alt='logo' className="app-logo" />
             <h2 className="app-title">ГРУЗ В РЕЙС</h2>
           </div>
         </div>
@@ -122,20 +98,10 @@ const Menu: React.FC = () => {
               <div className="user-type">{getUserType()}</div>
             </div>
           </div>
-          <IonButton 
-            fill="clear" 
-            size="small" 
-            className="logout-button"
-            onClick={logout}
-          >
-            <IonIcon icon={logOutOutline} />
-          </IonButton>
         </div>
 
         {/* Основное меню */}
         <IonList id="inbox-list">
-          <IonListHeader>Inbox</IonListHeader>
-          <IonNote>hi@ionicframework.com</IonNote>
           {appPages.map((appPage, index) => {
             return (
               <IonMenuToggle key={index} autoHide={false}>
@@ -146,13 +112,10 @@ const Menu: React.FC = () => {
                   lines="none" 
                   detail={false}
                 >
-                  <IonIcon 
-                    aria-hidden="true" 
-                    slot="start" 
-                    ios={appPage.iosIcon} 
-                    md={appPage.mdIcon} 
-                  />
-                  <IonLabel>{appPage.title}</IonLabel>
+                  
+                  { appPage.src }
+
+                  <IonLabel class='m-md'>{appPage.title}</IonLabel>
                 </IonItem>
               </IonMenuToggle>
             );

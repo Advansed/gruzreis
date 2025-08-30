@@ -45,7 +45,7 @@ const AppContent: React.FC = () => {
             <Menu />
             <IonRouterOutlet id="main">
               <Route path="/" exact={true}>
-                <Redirect to="/folder/Inbox" />
+                <Redirect to="/folder/Cargos" />
               </Route>
               <Route path="/folder/:name" exact={true}>
                 <Page />
