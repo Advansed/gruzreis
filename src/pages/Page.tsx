@@ -5,7 +5,8 @@ import { IonButtons, IonButton, IonIcon, IonContent, IonPage } from '@ionic/reac
 import { useParams } from 'react-router';
 import { useNavigation } from '../hooks/useNavigation';
 import PageHeader from './PageHeader';
-import Cargos from '../components/Cargos/Cargos';
+import { addCircle, addOutline } from 'ionicons/icons';
+import { Cargos } from '../components/Cargos';
 
 const Page: React.FC = () => {
   const { name } = useParams<{ name: string }>();
@@ -35,7 +36,14 @@ const Page: React.FC = () => {
   const renderRightButtons = () => {
     switch (name) {
 
-      case 'Cargos':return (<></>);
+      case 'Cargos':return (<>
+         <IonButton 
+          fill="clear" 
+          onClick={() => navigateInside('create')}
+        >
+          <IonIcon icon = { addOutline } />
+        </IonButton>
+      </>);
       
       case 'Outbox':return (<></>);
       
@@ -76,7 +84,7 @@ const Page: React.FC = () => {
   const renderContent = () => {
     switch (name) {
       case 'Cargos':
-        return Cargos( currentLevel );
+        return <Cargos />;
       
       case 'Outbox':
         return renderOutboxContent(currentLevel, sectionNav.data);

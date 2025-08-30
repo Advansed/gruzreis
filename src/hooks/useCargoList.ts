@@ -176,7 +176,7 @@ export function useCargoList() {
       cargoStore.dispatch({ type: 'error', data: 'Ошибка при загрузке грузов' });
       toast.error('Ошибка при загрузке грузов');
     }
-  }, [token, emit, toast]);
+  }, [token, emit]);
 
   // ============================================
   // СОЗДАНИЕ/ОБНОВЛЕНИЕ ГРУЗА
@@ -216,7 +216,7 @@ export function useCargoList() {
       toast.error('Ошибка при сохранении груза');
       return false;
     }
-  }, [token, emit, toast]);
+  }, [token, emit]);
 
   // ============================================
   // ПУБЛИКАЦИЯ ГРУЗА
@@ -238,7 +238,7 @@ export function useCargoList() {
       toast.error('Ошибка при публикации груза');
       return false;
     }
-  }, [token, emit, toast]);
+  }, [token, emit]);
 
   // ============================================
   // ФИЛЬТРАЦИЯ И ПОИСК
